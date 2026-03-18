@@ -1,0 +1,13 @@
+I want to create a simple algorithm visualiser for the top sorting and searching algorithms using react, vite, tailwindcss, typescript. Use nanostores for global state and any persistent stores to localstorage. I have created a new webstorm project called algora-vis using the vite generator with the react typescript template. I use pnpm as the package manager.
+
+
+
+Each of the algorithms should be in their own files. The main screen on the web page should give options of which algorithm to check/show and once clicked, the algorithm viewer page or something should show. For search algorithms, use a maze that is generated for each run (with an option to generate a new one at the click of a button) that clearly shows the starting and end point and at the click of a start button, the display correlates to the algorithm chosen and searches through the maze. There should play controls to play, pause, and 2/3 speed settings. For sorting algorithms. there should be a bar chart kind of thing with the lines in a random order (and the user should have the ability to randomise further), and when the user clicks play/sort then the sorting happens visually, with the accessed item being a different colour etc to make it easier to see what is happening. there should also be the same play controls for this.
+
+
+
+At the top of the algorithm visualiser, there should be a bar that shows the currently selected algorithm and then drop downs for the search and sort algorithms to be able to select another one, and then also contains the play controls.
+
+
+
+Any further clarification needed?
