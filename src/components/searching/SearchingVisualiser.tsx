@@ -17,13 +17,13 @@ import { MazeCell } from './MazeCell';
 import { Button } from '../ui';
 import type { CellType } from '../../types';
 
-const LEGEND_ITEMS: { type: CellType; label: string; className: string }[] = [
-    { type: 'start', label: 'Start', className: 'bg-emerald-500' },
-    { type: 'end', label: 'End', className: 'bg-rose-500' },
-    { type: 'wall', label: 'Wall', className: 'bg-stone-800' },
-    { type: 'visited', label: 'Visited', className: 'bg-sky-300 border border-sky-400' },
-    { type: 'frontier', label: 'Frontier', className: 'bg-amber-200 border border-amber-300' },
-    { type: 'path', label: 'Path', className: 'bg-violet-400' },
+const LEGEND_ITEMS: { type: CellType; label: string; color: string }[] = [
+    { type: 'start',    label: 'Start',    color: '#10b981' },
+    { type: 'end',      label: 'End',      color: '#f43f5e' },
+    { type: 'wall',     label: 'Wall',     color: '#292524' },
+    { type: 'visited',  label: 'Visited',  color: '#e0f2fe' },
+    { type: 'frontier', label: 'Frontier', color: '#fde68a' },
+    { type: 'path',     label: 'Path',     color: '#a78bfa' },
 ];
 
 export const SearchingVisualiser: React.FC = () => {
@@ -76,6 +76,18 @@ export const SearchingVisualiser: React.FC = () => {
         $searchSteps.set(steps);
     }, [algorithmId]);
 
+    // When maze size changes after mount, generate a fresh maze at the new size
+    const mazeSizeRef = useRef(mazeSize);
+    useEffect(() => {
+        if (
+            mazeSize.rows === mazeSizeRef.current.rows &&
+            mazeSize.cols === mazeSizeRef.current.cols
+        ) return;
+        mazeSizeRef.current = mazeSize;
+        generateNewMaze();
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [mazeSize]);
+
     // Compute cell size from container
     useEffect(() => {
         const update = () => {
@@ -98,7 +110,7 @@ export const SearchingVisualiser: React.FC = () => {
     return (
         <div className="flex flex-col h-full">
             {/* Toolbar */}
-            <div className="flex items-center gap-3 px-6 py-3 bg-white border-b border-stone-100 flex-wrap">
+            <div className="flex items-center gap-4 px-6 py-3 bg-white border-b border-stone-100 flex-wrap">
                 <Button
                     variant="outline"
                     size="sm"
@@ -119,11 +131,58 @@ export const SearchingVisualiser: React.FC = () => {
                     New Maze
                 </Button>
 
+                {/* Divider */}
+                <div className="w-px h-5 bg-stone-200 shrink-0" />
+
+                {/* Size sliders */}
+                <div className="flex items-center gap-4 flex-wrap">
+                    <div className="flex items-center gap-2">
+                        <span className="text-xs text-stone-500 shrink-0">Cols</span>
+                        <input
+                            type="range"
+                            min={11}
+                            max={61}
+                            step={2}
+                            value={mazeSize.cols}
+                            disabled={playState === 'playing'}
+                            onChange={(e) => {
+                                const cols = Number(e.target.value);
+                                $mazeSize.set({ ...mazeSize, cols });
+                            }}
+                            className="w-20 disabled:opacity-40"
+                            style={{ accentColor: '#44403c' }}
+                        />
+                        <span className="text-xs font-mono text-stone-600 w-6 tabular-nums">{mazeSize.cols}</span>
+                    </div>
+
+                    <div className="flex items-center gap-2">
+                        <span className="text-xs text-stone-500 shrink-0">Rows</span>
+                        <input
+                            type="range"
+                            min={11}
+                            max={41}
+                            step={2}
+                            value={mazeSize.rows}
+                            disabled={playState === 'playing'}
+                            onChange={(e) => {
+                                const rows = Number(e.target.value);
+                                $mazeSize.set({ ...mazeSize, rows });
+                            }}
+                            className="w-20 disabled:opacity-40"
+                            style={{ accentColor: '#44403c' }}
+                        />
+                        <span className="text-xs font-mono text-stone-600 w-6 tabular-nums">{mazeSize.rows}</span>
+                    </div>
+                </div>
+
                 {/* Legend */}
                 <div className="flex flex-wrap gap-3 ml-auto">
                     {LEGEND_ITEMS.map((item) => (
                         <div key={item.type} className="flex items-center gap-1.5">
-                            <div className={`w-3 h-3 rounded-sm ${item.className}`} />
+                            <div
+                                className="w-3 h-3 rounded-sm shrink-0"
+                                style={{ backgroundColor: item.color }}
+                            />
                             <span className="text-xs text-stone-500">{item.label}</span>
                         </div>
                     ))}
