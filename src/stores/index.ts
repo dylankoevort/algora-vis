@@ -49,6 +49,7 @@ export const $activeAlgorithmId = computed(
 export const $playState = atom<PlayState>('idle');
 export const $speed = persistedAtom<Speed>('algora:speed', 1);
 export const $currentStepIndex = atom<number>(0);
+export const $muted = persistedAtom<boolean>('algora:muted', false);
 
 // ─── Sorting state ────────────────────────────────────────────────────────────
 

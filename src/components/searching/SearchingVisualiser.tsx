@@ -12,9 +12,11 @@ import {
 import { runSearchAlgorithm, generateMaze } from '../../algorithms/searching';
 import { getSearchMeta } from '../../algorithms/meta';
 import { usePlayback } from '../../hooks/usePlayback';
+import { useSearchSound } from '../../hooks/useSearchSound';
 import { SearchInfoPanel } from '../layout/InfoPanel';
 import { MazeCell } from './MazeCell';
 import { Button } from '../ui';
+import { MuteButton } from '../ui/MuteButton';
 import type { CellType } from '../../types';
 
 const LEGEND_ITEMS: { type: CellType; label: string; color: string }[] = [
@@ -30,11 +32,15 @@ export const SearchingVisualiser: React.FC = () => {
     usePlayback();
 
     const algorithmId = useStore($activeSearchAlgorithm);
-    const mazeGrid = useStore($mazeGrid);
-    const mazeSize = useStore($mazeSize);
+    const mazeGrid    = useStore($mazeGrid);
+    const mazeSize    = useStore($mazeSize);
     const currentStep = useStore($currentSearchStep);
-    const playState = useStore($playState);
-    const meta = getSearchMeta(algorithmId);
+    const searchSteps = useStore($searchSteps);
+    const playState   = useStore($playState);
+    const meta        = getSearchMeta(algorithmId);
+
+    // Sound effects
+    useSearchSound(currentStep, searchSteps);
 
     const containerRef = useRef<HTMLDivElement>(null);
     const [cellSize, setCellSize] = useState(18);
@@ -130,6 +136,8 @@ export const SearchingVisualiser: React.FC = () => {
                     </svg>
                     New Maze
                 </Button>
+
+                <MuteButton />
 
                 {/* Divider */}
                 <div className="w-px h-5 bg-stone-200 shrink-0" />
